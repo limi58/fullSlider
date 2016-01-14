@@ -47,7 +47,7 @@ gulp.task('buildcss', function () {
   buildCss()
 })
 
-function bundle() {console.log(b)
+function bundle() {
   return b.transform("babelify", {presets: ["es2015"]})
     .bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
@@ -55,13 +55,14 @@ function bundle() {console.log(b)
     .pipe(buffer())
     .pipe(uglify())
     .pipe(gulp.dest(config.dist))
-    .pipe(connect.reload());
+    .pipe(connect.reload())
 } 
 
 function buildCss(){
   return gulp.src('./src/*.scss')
    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-   .pipe(gulp.dest('./dist'));
+   .pipe(gulp.dest('./dist'))
+   .pipe(connect.reload())
 }
 
 

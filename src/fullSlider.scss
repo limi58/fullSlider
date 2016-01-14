@@ -13,4 +13,23 @@ html, body, .sectionWrap, .section{
   transition: all;
   -webkit-transition: all;
   position: absolute;
+  .section{
+    background-position: center top;
+    background-size: contain;
+  }
+}
+
+
+
+[data-id="1"]{
+  background: url(1.png);
+}
+[data-id="2"]{
+  background: url(2.png);
+}
+[data-id="3"]{
+  background: url(3.png);
+}
+[data-id="4"]{
+  background: url(4.png);
 }
