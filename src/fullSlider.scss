@@ -15,21 +15,101 @@ html, body, .sectionWrap, .section{
   position: absolute;
   .section{
     background-position: center top;
-    background-size: contain;
+    background-size: cover;
+    background-repeat: no-repeat;
+    text-align: center;
+    position: relative;
+    img{
+      height: 100%;
+      width: auto;
+    }
   }
+  
+}
+
+@mixin animation($params){
+  animation: $params;
+  -webkit-animation: $params;
+}
+
+@mixin keyframes($name){
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name}{
+    @content;
+  }
+}
+
+.arrow{
+  position: fixed;
+  bottom: 10px;
+  text-align: center;
+  width: 100%;
+  img{
+    width: 20px;
+  }
+
+  @include animation(arrow 0.5s ease 0s infinite alternate);
+  @include keyframes('arrow'){
+    0% {bottom: 20px;}
+    100% {bottom: 10px;}
+  };
 }
 
 
 
 [data-id="1"]{
-  background: url(1.png);
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/1-1.jpg);
 }
 [data-id="2"]{
-  background: url(2.png);
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/2.jpg);
+  background-size: contain !important;
+  background-color: #17C6FF;
 }
 [data-id="3"]{
-  background: url(3.png);
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/3.jpg);
+  background-size: contain !important;
+  background-color: #17C6FF;
 }
 [data-id="4"]{
-  background: url(4.png);
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/4.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #6CD9C5;
 }
+[data-id="5"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/5.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #6CD9C5;
+}
+[data-id="6"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/6.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #4EDEBB;
+}
+[data-id="7"]{
+  a.map{
+    z-index: 10;
+    cursor: pointer;
+    display: block;
+    // background:#333;
+    position:absolute;
+    width: 80%;
+    height: 40px;;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    &.email{
+      top: 17.5%;
+    }
+    &.phone{
+      top: 30%;
+    }
+    &.qq{
+      top: 42.5%;
+    }
+  }
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/7-1.jpg);
+}
+
+

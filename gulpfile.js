@@ -13,10 +13,11 @@ const path = require('path')
 gulp.task('default', ['connect', 'watchCss'])
 
 config = {
-  serverDir: __dirname,
+  serverDir: path.join(__dirname, 'dist'),
   port: 3838,
   entryJs: path.join(__dirname, 'src', 'fullSlider.js'),
-  dist: path.join(__dirname, 'dist')
+  distJs: path.join(__dirname, 'dist', 'js'),
+  distCss: path.join(__dirname, 'dist', 'css')
 }
 
 gulp.task('connect', function () {
@@ -54,14 +55,14 @@ function bundle() {
     .pipe(source('fullSlider.js'))
     .pipe(buffer())
     .pipe(uglify())
-    .pipe(gulp.dest(config.dist))
+    .pipe(gulp.dest(config.distJs))
     .pipe(connect.reload())
 } 
 
 function buildCss(){
   return gulp.src('./src/*.scss')
    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-   .pipe(gulp.dest('./dist'))
+   .pipe(gulp.dest(config.distCss))
    .pipe(connect.reload())
 }
 
