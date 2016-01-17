@@ -10,8 +10,8 @@ html, body, .sectionWrap, .section{
 }
 
 .sectionWrap{
-  transition: all;
-  -webkit-transition: all;
+  transition: all 0s linear;
+  -webkit-transition: all 0s linear;
   position: absolute;
   .section{
     background-position: center top;

@@ -1,198 +1,196 @@
+/**
+ * fullSlider v1.1.0
+ * author - limi58
+ * github - https://github.com/limi58/fullSlider
+ */
 
+class FullSlider 
+{
+  constructor(config = {})
+  {
+    this.$sectionWrap = document.querySelector('#sectionWrap')
+    this.$debug = document.querySelector('#debug')
+    this.windowHeight = document.body.clientHeight
+    this.totalPage = document.querySelectorAll('#sectionWrap .section').length
 
-// class FullSlider 
-// {
+    this.startY = null
+    this.endY = null
+    this.currentPage = 0
+    this.previousPage = 0
+    this.currentTranslateY = 0
 
-//   constructor()
-//   {
-//     this.$sectionWrap = document.querySelector('#sectionWrap')
-//     this.$debug = document.querySelector('#debug')
-//     this.windowHeight = document.body.clientHeight
-//     this.totalPage = document.querySelectorAll('#sectionWrap .section').length
-
-//     this.startY = null
-//     this.endY = null
-//     this.currentPage = 0
-//     this.currentTranslateY = 0
-
-//     document.addEventListener('touchstart', (e)=>{
-//       e.preventDefault()
-//       this.onTouchstart(e)
-//       document.addEventListener('touchmove', this.onTouchmove)
-//     })
-
-//     document.addEventListener('touchend', (e)=>{
-//       e.preventDefault()
-//       document.removeEventListener('touchmove', this.onTouchmove)
-//       this.onTouchend(e)
-//     })
-
-//     this.$sectionWrap.attr = function(key, value){
-//       this.$sectionWrap.setAttribute(key, value)
-//     }
-//   }
-
-
-
-//   translateYAnimate(num)
-//   {
-//     this.$sectionWrap.attr('style', `transition: all 0.4s ease-in; transform: translate3d(0, ${num}px, 0); -webkit-transition: all 0.4s ease-in; -webkit-transform: translate3d(0, ${num}px, 0)`)
-//   }
-
-//   translateY(num)
-//   {
-//     this.$sectionWrap.attr('style', `transform: translate3d(0, ${num}px, 0); -webkit-transform: translate3d(0, ${num}px, 0)`)
-//   }
-
-//   onTouchstart(e)
-//   {
-//     this.startY = e.changedTouches[0].screenY
-//   }
-
-//   onTouchend(e)
-//   {
-//     // 计算currentPage
-//     this.setCurrentPage(e)
-//     // 
-//     this.currentTranslateY = this.currentPage * this.windowHeight * -1
-
-//     this.translateYAnimate(this.currentPage * this.windowHeight * -1)
-//   }
-
-//   onTouchmove(e)
-//   {
-//     e.preventDefault()
-//     // 第0屏的时候禁止向上滑动
-//     if(this.currentPage === 0 && e.changedTouches[0].screenY - this.startY > 0) return
-//     if(this.currentPage + 1 === this.totalPage && e.changedTouches[0].screenY - this.startY < 0) return
-
-//     this.translateY(e.changedTouches[0].screenY - this.startY + this.currentTranslateY)
-//   }
-
-//   setCurrentPage(e)
-//   {
-//     if(e.changedTouches[0].screenY === this.startY) return
-//     if(this.currentPage === 0 && e.changedTouches[0].screenY - this.startY > 0) return
-//     if(this.currentPage +1 === this.totalPage && e.changedTouches[0].screenY - this.startY < 0) return
-
-//     if(e.changedTouches[0].screenY > this.startY){
-//       this.currentPage --
-//     }else{
-//       this.currentPage ++
-//     }
-//   }
-
-//   dump(text)
-//   {
-//     // return
-//     // $debug.text(text)
-//     console.log(text)
-//   }
-// }
-
-// class Haha
-// {
-//   constructor()
-//   {
-//     console.log('con')
-//     this.fun()
-//   }
-
-//   fun(){
-//     console.log('fun')
-//     this.fun2()
-//   }
-
-//   fun2(){
-//     console.log('fun2')
-//   }
-// }
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  // const fullSlider = new FullSlider()
-  // const haha = new Haha()
-  main()
-})
-
-function main(){
-
-  const $sectionWrap = document.querySelector('#sectionWrap')
-  const $debug = document.querySelector('#debug')
-  const windowHeight = document.body.clientHeight
-  const totalPage = document.querySelectorAll('#sectionWrap .section').length
-
-  let startY = null
-  let endY = null
-  let currentPage = 0
-  let currentTranslateY = 0
-
-  document.addEventListener('touchstart', function(e){
-    // e.preventDefault()
-    onTouchstart(e)
-    document.addEventListener('touchmove', onTouchmove)
-  })
-
-  document.addEventListener('touchend', function(e){
-    // e.preventDefault()
-    document.removeEventListener('touchmove', onTouchmove)
-    onTouchend(e)
-  })
-
-  $sectionWrap.attr = function(key, value){
-    $sectionWrap.setAttribute(key, value)
+    // config
+    this.duration = config.duration || 0.4
+    this.targetCallback = config.targetCallback
+    this.afterCallback = config.afterCallback
   }
 
-  function translateYAnimate(num){
-    $sectionWrap.attr('style', `transition: all 0.4s ease-in; transform: translate3d(0, ${num}px, 0); -webkit-transition: all 0.4s ease-in; -webkit-transform: translate3d(0, ${num}px, 0)`)
+  start()
+  {
+    document.addEventListener('touchstart', (e)=>{
+      this.onTouchstart(e)
+      document.addEventListener('touchmove', this.onTouchmove.bind(this))
+    })
+
+    document.addEventListener('touchend', (e)=>{
+      document.removeEventListener('touchmove', this.onTouchmove)
+      this.onTouchend(e)
+    })
+
+    document.addEventListener('transitionend', this.onTransitionend.bind(this))
   }
 
-  function translateY(num){
-    $sectionWrap.attr('style', `transform: translate3d(0, ${num}px, 0); -webkit-transform: translate3d(0, ${num}px, 0)`)
+
+  /**
+   * 屏幕动画到指定Y
+   */
+  translateYAnimate(num)
+  {
+    const duration = this.duration
+    this.$sectionWrap.setAttribute('style', `transition: all ${duration}s ease-in; transform: translate3d(0, ${num}px, 0); -webkit-transition: all ${duration}s ease-in; -webkit-transform: translate3d(0, ${num}px, 0)`)
   }
 
-  function onTouchstart(e){
-    startY = e.changedTouches[0].screenY
+  /**
+   * 屏幕到指定Y，无动画，用于跟随手指
+   */
+  translateY(num)
+  {
+    this.$sectionWrap.setAttribute('style', `transform: translate3d(0, ${num}px, 0); -webkit-transform: translate3d(0, ${num}px, 0)`)
   }
 
-  function onTouchend(e){
+  /**
+   * css动画执行完毕回调
+   */
+  onTransitionend(e)
+  {
+    switch(e.target.id)
+    {
+      case 'sectionWrap':
+        this.runPanCallback()
+        break
+      default:
+        break
+    }
+  }
+
+  /**
+   * 滚屏动画停止后执行
+   */
+  runPanCallback()
+  {
+    if(this.afterCallback[this.previousPage]){
+      this.afterCallback[this.previousPage]()
+    }
+    if(this.targetCallback[this.currentPage]){
+      this.targetCallback[this.currentPage]()
+    }
+  }
+
+  /**
+   * 手指刚刚接触到屏幕执行
+   */
+  onTouchstart(e)
+  {
+    this.startY = this.getCurrentY(e)
+  }
+
+  /**
+   * 手指离开时的回调函数
+   */
+  onTouchend(e)
+  {
     // 计算currentPage
-    setCurrentPage(e)
-    // 
-    currentTranslateY = currentPage * windowHeight * -1
-
-    translateYAnimate(currentPage * windowHeight * -1)
+    this.setCurrentPage(e)
+    // 设置当前translateY的坐标
+    this.currentTranslateY = this.currentPage * this.windowHeight * -1
+    // 动画到指定Y
+    this.translateYAnimate(this.currentPage * this.windowHeight * -1)
   }
 
-  function onTouchmove(e){
+  // 获取当前Y坐标
+  getCurrentY(e){
+    return e.changedTouches[0].screenY
+  }
+
+  /**
+   * 滑动事件时的动作
+   */
+  onTouchmove(e)
+  {
     e.preventDefault()
-    // 第0屏的时候禁止向上滑动
-    if(currentPage === 0 && e.changedTouches[0].screenY - startY > 0) return
-    // 最后一屏
-    if(currentPage + 1 === totalPage && e.changedTouches[0].screenY - startY < 0) return
+    // 第0屏的时候禁止向下滑动
+    if(this.isFirstScreen() && ! this.isPanUp(e)) return
+    // 最后一屏时禁止向上滑动
+    if(this.isEndScreen() && this.isPanUp(e)) return
 
-    translateY(e.changedTouches[0].screenY - startY + currentTranslateY)
-    // console.log(e.changedTouches[0].screenY - startY)
+    // 跟随手指移动
+    this.translateY(this.getPanDistance(e) + this.currentTranslateY)
   }
 
-  function setCurrentPage(e){
-    if(e.changedTouches[0].screenY === startY) return
-    if(currentPage === 0 && e.changedTouches[0].screenY - startY > 0) return
-    if(currentPage +1 === totalPage && e.changedTouches[0].screenY - startY < 0) {
-      currentPage = 0
+  /**
+   * 获取滑动距离
+   */
+  getPanDistance(e){
+    return this.getCurrentY(e) - this.startY
+  }
+
+  /**
+   * 是否向上滑动
+   */
+  isPanUp(e){
+    return this.getPanDistance(e) < 0
+  }
+
+  /**
+   * 是否在第一屏
+   */
+  isFirstScreen(){
+    return this.currentPage === 0
+  }
+
+  /**
+   * 是否在最后一屏
+   */
+  isEndScreen(){
+    return this.currentPage + 1 === this.totalPage
+  }
+
+  /**
+   * 设置当前页数和之前页数
+   */
+  setCurrentPage(e)
+  {
+    // 当手指未移动时
+    if(this.getCurrentY(e) === this.startY) return
+    // 当在第一屏且向下滑动
+    if(this.currentPage === 0 && ! this.isPanUp(e)) return
+    // 当到最后一屏且向上滑动
+    if(this.currentPage +1 === this.totalPage && this.isPanUp(e)) {
+      this.currentPage = 0
       return
     }
 
-    if(e.changedTouches[0].screenY > startY){
-      currentPage --
+    // 正常情况下的滑动
+    this.previousPage = this.currentPage
+
+    if(this.isPanUp(e)){
+      this.currentPage ++
     }else{
-      currentPage ++
+      this.currentPage --
     }
   }
-
-  function dump(text){return
-    $debug.text(text)
-  }
-
-  
-  
 }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const fullSlider = new FullSlider({
+    targetCallback: [b],
+    afterCallback: [a],
+  })
+  function b(){
+    console.log('1b')
+  }
+  function a(){
+    console.log('1a')
+  }
+  fullSlider.start()
+})

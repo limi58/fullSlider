@@ -1,1 +1,242 @@
-!function e(n,t,r){function o(u,i){if(!t[u]){if(!n[u]){var s="function"==typeof require&&require;if(!i&&s)return s(u,!0);if(c)return c(u,!0);var a=new Error("Cannot find module '"+u+"'");throw a.code="MODULE_NOT_FOUND",a}var d=t[u]={exports:{}};n[u][0].call(d.exports,function(e){var t=n[u][1][e];return o(t?t:e)},d,d.exports,e,n,t,r)}return t[u].exports}for(var c="function"==typeof require&&require,u=0;u<r.length;u++)o(r[u]);return o}({1:[function(e,n,t){"use strict";function r(){function e(e){u.attr("style","transition: all 0.4s ease-in; transform: translate3d(0, "+e+"px, 0); -webkit-transition: all 0.4s ease-in; -webkit-transform: translate3d(0, "+e+"px, 0)")}function n(e){u.attr("style","transform: translate3d(0, "+e+"px, 0); -webkit-transform: translate3d(0, "+e+"px, 0)")}function t(e){a=e.changedTouches[0].screenY}function r(n){c(n),f=d*i*-1,e(d*i*-1)}function o(e){e.preventDefault(),0===d&&e.changedTouches[0].screenY-a>0||d+1===s&&e.changedTouches[0].screenY-a<0||n(e.changedTouches[0].screenY-a+f)}function c(e){return e.changedTouches[0].screenY===a||0===d&&e.changedTouches[0].screenY-a>0?void 0:d+1===s&&e.changedTouches[0].screenY-a<0?void(d=0):void(e.changedTouches[0].screenY>a?d--:d++)}var u=document.querySelector("#sectionWrap"),i=(document.querySelector("#debug"),document.body.clientHeight),s=document.querySelectorAll("#sectionWrap .section").length,a=null,d=0,f=0;document.addEventListener("touchstart",function(e){t(e),document.addEventListener("touchmove",o)}),document.addEventListener("touchend",function(e){document.removeEventListener("touchmove",o),r(e)}),u.attr=function(e,n){u.setAttribute(e,n)}}document.addEventListener("DOMContentLoaded",function(){r()})},{}]},{},[1]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * fullSlider v1.1.0
+ * author - limi58
+ * github - https://github.com/limi58/fullSlider
+ */
+
+var FullSlider = function () {
+  function FullSlider() {
+    var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    _classCallCheck(this, FullSlider);
+
+    this.$sectionWrap = document.querySelector('#sectionWrap');
+    this.$debug = document.querySelector('#debug');
+    this.windowHeight = document.body.clientHeight;
+    this.totalPage = document.querySelectorAll('#sectionWrap .section').length;
+
+    this.startY = null;
+    this.endY = null;
+    this.currentPage = 0;
+    this.previousPage = 0;
+    this.currentTranslateY = 0;
+
+    // config
+    this.duration = config.duration || 0.4;
+    this.targetCallback = config.targetCallback;
+    this.afterCallback = config.afterCallback;
+  }
+
+  _createClass(FullSlider, [{
+    key: 'start',
+    value: function start() {
+      var _this = this;
+
+      document.addEventListener('touchstart', function (e) {
+        _this.onTouchstart(e);
+        document.addEventListener('touchmove', _this.onTouchmove.bind(_this));
+      });
+
+      document.addEventListener('touchend', function (e) {
+        document.removeEventListener('touchmove', _this.onTouchmove);
+        _this.onTouchend(e);
+      });
+
+      document.addEventListener('transitionend', this.onTransitionend.bind(this));
+    }
+
+    /**
+     * 屏幕动画到指定Y
+     */
+
+  }, {
+    key: 'translateYAnimate',
+    value: function translateYAnimate(num) {
+      var duration = this.duration;
+      this.$sectionWrap.setAttribute('style', 'transition: all ' + duration + 's ease-in; transform: translate3d(0, ' + num + 'px, 0); -webkit-transition: all ' + duration + 's ease-in; -webkit-transform: translate3d(0, ' + num + 'px, 0)');
+    }
+
+    /**
+     * 屏幕到指定Y，无动画，用于跟随手指
+     */
+
+  }, {
+    key: 'translateY',
+    value: function translateY(num) {
+      this.$sectionWrap.setAttribute('style', 'transform: translate3d(0, ' + num + 'px, 0); -webkit-transform: translate3d(0, ' + num + 'px, 0)');
+    }
+
+    /**
+     * css动画执行完毕回调
+     */
+
+  }, {
+    key: 'onTransitionend',
+    value: function onTransitionend(e) {
+      switch (e.target.id) {
+        case 'sectionWrap':
+          this.runPanCallback();
+          break;
+        default:
+          break;
+      }
+    }
+
+    /**
+     * 滚屏动画停止后执行
+     */
+
+  }, {
+    key: 'runPanCallback',
+    value: function runPanCallback() {
+      if (this.afterCallback[this.previousPage]) {
+        this.afterCallback[this.previousPage]();
+      }
+      if (this.targetCallback[this.currentPage]) {
+        this.targetCallback[this.currentPage]();
+      }
+    }
+
+    /**
+     * 手指刚刚接触到屏幕执行
+     */
+
+  }, {
+    key: 'onTouchstart',
+    value: function onTouchstart(e) {
+      this.startY = this.getCurrentY(e);
+    }
+
+    /**
+     * 手指离开时的回调函数
+     */
+
+  }, {
+    key: 'onTouchend',
+    value: function onTouchend(e) {
+      // 计算currentPage
+      this.setCurrentPage(e);
+      // 设置当前translateY的坐标
+      this.currentTranslateY = this.currentPage * this.windowHeight * -1;
+      // 动画到指定Y
+      this.translateYAnimate(this.currentPage * this.windowHeight * -1);
+    }
+
+    // 获取当前Y坐标
+
+  }, {
+    key: 'getCurrentY',
+    value: function getCurrentY(e) {
+      return e.changedTouches[0].screenY;
+    }
+
+    /**
+     * 滑动事件时的动作
+     */
+
+  }, {
+    key: 'onTouchmove',
+    value: function onTouchmove(e) {
+      e.preventDefault();
+      // 第0屏的时候禁止向下滑动
+      if (this.isFirstScreen() && !this.isPanUp(e)) return;
+      // 最后一屏时禁止向上滑动
+      if (this.isEndScreen() && this.isPanUp(e)) return;
+
+      // 跟随手指移动
+      this.translateY(this.getPanDistance(e) + this.currentTranslateY);
+    }
+
+    /**
+     * 获取滑动距离
+     */
+
+  }, {
+    key: 'getPanDistance',
+    value: function getPanDistance(e) {
+      return this.getCurrentY(e) - this.startY;
+    }
+
+    /**
+     * 是否向上滑动
+     */
+
+  }, {
+    key: 'isPanUp',
+    value: function isPanUp(e) {
+      return this.getPanDistance(e) < 0;
+    }
+
+    /**
+     * 是否在第一屏
+     */
+
+  }, {
+    key: 'isFirstScreen',
+    value: function isFirstScreen() {
+      return this.currentPage === 0;
+    }
+
+    /**
+     * 是否在最后一屏
+     */
+
+  }, {
+    key: 'isEndScreen',
+    value: function isEndScreen() {
+      return this.currentPage + 1 === this.totalPage;
+    }
+
+    /**
+     * 设置当前页数和之前页数
+     */
+
+  }, {
+    key: 'setCurrentPage',
+    value: function setCurrentPage(e) {
+      // 当手指未移动时
+      if (this.getCurrentY(e) === this.startY) return;
+      // 当在第一屏且向下滑动
+      if (this.currentPage === 0 && !this.isPanUp(e)) return;
+      // 当到最后一屏且向上滑动
+      if (this.currentPage + 1 === this.totalPage && this.isPanUp(e)) {
+        this.currentPage = 0;
+        return;
+      }
+
+      // 正常情况下的滑动
+      this.previousPage = this.currentPage;
+
+      if (this.isPanUp(e)) {
+        this.currentPage++;
+      } else {
+        this.currentPage--;
+      }
+    }
+  }]);
+
+  return FullSlider;
+}();
+
+document.addEventListener('DOMContentLoaded', function () {
+  var fullSlider = new FullSlider({
+    targetCallback: [b],
+    afterCallback: [a]
+  });
+  function b() {
+    console.log('1b');
+  }
+  function a() {
+    console.log('1a');
+  }
+  fullSlider.start();
+});
+
+},{}]},{},[1]);
