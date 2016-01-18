@@ -1,0 +1,73 @@
+@import 'FullSlider';
+
+[data-id="0"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/1-1.jpg);
+}
+[data-id="1"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/2.jpg);
+  background-size: contain !important;
+  background-color: #17C6FF;
+}
+[data-id="2"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/3.jpg);
+  background-size: contain !important;
+  background-color: #17C6FF;
+}
+[data-id="3"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/4.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #6CD9C5;
+}
+[data-id="4"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/5.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #6CD9C5;
+}
+[data-id="5"]{
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/6.jpg?v=1.2);
+  background-size: contain !important;
+  background-color: #4EDEBB;
+}
+[data-id="6"]{
+  a.map{
+    z-index: 10;
+    cursor: pointer;
+    display: block;
+    // background:#333;
+    position:absolute;
+    width: 80%;
+    height: 40px;;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    &.email{
+      top: 17.5%;
+    }
+    &.phone{
+      top: 30%;
+    }
+    &.qq{
+      top: 42.5%;
+    }
+  }
+  background: url(https://dn-guijinhui-images.qbox.me/platform/os/images/7-1.jpg);
+}
+
+[data-type="animation"]{
+  opacity: 0;
+}
+
+@mixin transform($params){
+  transform: $params;
+  -webkit-transform: $params;
+}
+
+@include keyframes('puffIn'){
+  0%{opacity:0;@include transform(scale(2,2));}
+  100%{opacity:1;@include transform(scale(1,1));}
+}
+
+@include keyframes('fadeInUp'){
+  0%{opacity:0;@include transform(translate3d(0,100%,0));}
+  100%{opacity:1;@include transform(none);}
+}

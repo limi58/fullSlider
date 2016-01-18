@@ -181,16 +181,5 @@ class FullSlider
   }
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  const fullSlider = new FullSlider({
-    targetCallback: [b],
-    afterCallback: [a],
-  })
-  function b(){
-    console.log('1b')
-  }
-  function a(){
-    console.log('1a')
-  }
-  fullSlider.start()
-})
+module.exports = FullSlider
+
