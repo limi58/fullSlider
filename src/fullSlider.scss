@@ -9,6 +9,11 @@ html, body, .sectionWrap, .section{
   width: 100%;
 }
 
+@mixin transform($params){
+  transform: $params;
+  -webkit-transform: $params;
+}
+
 .sectionWrap{
   transition: all 0s linear;
   -webkit-transition: all 0s linear;
@@ -19,13 +24,14 @@ html, body, .sectionWrap, .section{
     background-repeat: no-repeat;
     text-align: center;
     position: relative;
+    @include transform(rotateZ(0deg));
     img{
       position: absolute;
       left: 0;
       right: 0;
       margin: 0 auto;
       height: 100%;
-      width: auto;
+      // width: auto;
     }
   }
   

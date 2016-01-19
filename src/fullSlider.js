@@ -166,6 +166,7 @@ class FullSlider
     if(this.currentPage === 0 && ! this.isPanUp(e)) return
     // 当到最后一屏且向上滑动
     if(this.currentPage +1 === this.totalPage && this.isPanUp(e)) {
+      this.previousPage = this.currentPage
       this.currentPage = 0
       return
     }
