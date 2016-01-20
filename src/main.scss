@@ -1,5 +1,15 @@
 @import 'FullSlider';
 
+.loader{
+  width: 100%;
+  height: 100%;
+  background: #333;
+  text-align: center;
+  color: #fff;
+  padding-top: 50%;
+  z-index: 10;
+}
+
 [data-id="0"]{
   background: url(../images/1.jpg);
 }
@@ -33,7 +43,6 @@
     z-index: 10;
     cursor: pointer;
     display: block;
-    // background:#333;
     position:absolute;
     width: 80%;
     height: 40px;;
@@ -82,24 +91,24 @@
 }
 
 @include keyframes('fadeInUp'){
-  0%{opacity:0;@include transform(translate3d(0,100%,0));}
+  0%{opacity:0;@include transform(translate3d(0,50px,0));}
   100%{opacity:1;@include transform(none);}
 }
 
 @include keyframes('fadeInRight'){
-  0%{opacity:0;@include transform(translate3d(100%,0,0))};
+  0%{opacity:0;@include transform(translate3d(50px,0,0))};
   100%{opacity:1;@include transform(none);}
 }
 
 @include keyframes('fadeInLeft'){
-  0%{opacity:0;@include transform(translate3d(-100%,0,0))};
+  0%{opacity:0;@include transform(translate3d(-50px,0,0))};
   100%{opacity:1;@include transform(none);}
 }
 
 @include keyframes('bounceInLeft'){
   0%,60%,75%,90%,100%{-webkit-transition-timing-function:cubic-bezier(0.215,.610,.355,1.000);transition-timing-function:cubic-bezier(0.215,.610,.355,1.000);}
 
-  0%{opacity:0;-webkit-transform:translate3d(-3000px,0,0);transform:translate3d(-3000px,0,0)}
+  0%{opacity:0;-webkit-transform:translate3d(-50px,0,0);transform:translate3d(-50px,0,0)}
   60%{-webkit-transform:translate3d(25px,0,0);transform:translate3d(25px,0,0)}
   75%{-webkit-transform:translate3d(-10px,0,0);transform:translate3d(-10px,0,0)}
   90%{-webkit-transform:translate3d(5px,0,0);transform:translate3d(5px,0,0)}

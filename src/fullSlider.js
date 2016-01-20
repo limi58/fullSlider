@@ -38,6 +38,7 @@ class FullSlider
     })
 
     document.addEventListener('transitionend', this.onTransitionend.bind(this))
+    document.addEventListener('webkitTransitionEnd', this.onTransitionend.bind(this))
   }
 
 
@@ -55,7 +56,7 @@ class FullSlider
    */
   translateY(num)
   {
-    this.$sectionWrap.setAttribute('style', `transform: translate3d(0, ${num}px, 0); -webkit-transform: translate3d(0, ${num}px, 0)`)
+    this.$sectionWrap.setAttribute('style', `-webkit-transform: translate3d(0, ${num}px, 0);transform: translate3d(0, ${num}px, 0);`)
   }
 
   /**
@@ -130,28 +131,32 @@ class FullSlider
   /**
    * 获取滑动距离
    */
-  getPanDistance(e){
+  getPanDistance(e)
+  {
     return this.getCurrentY(e) - this.startY
   }
 
   /**
    * 是否向上滑动
    */
-  isPanUp(e){
+  isPanUp(e)
+  {
     return this.getPanDistance(e) < 0
   }
 
   /**
    * 是否在第一屏
    */
-  isFirstScreen(){
+  isFirstScreen()
+  {
     return this.currentPage === 0
   }
 
   /**
    * 是否在最后一屏
    */
-  isEndScreen(){
+  isEndScreen()
+  {
     return this.currentPage + 1 === this.totalPage
   }
 

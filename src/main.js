@@ -17,16 +17,22 @@ function endAnimate(page){
 }
 
 window.addEventListener('load', ()=>{
+
+  $('#loader').style.display = 'none'
+  $('#arrow').className = 'arrow'
   t0()
+
   const fullSlider = new FullSlider({
     targetCallback: [t0, t1, t2, t3, t4, t5, t6],
     afterCallback: [a0, a1, a2, a3, a4, a5, a6],
   })
+  fullSlider.start() 
+  
   function t0(){
     startAnimate('0', [
       {name: 'puffIn', duration: '1s', delay: '0.5s', count: '1', direction: 'alternate'},
       {name: 'puffIn', duration: '1s', delay: '1s', count: '1', direction: 'alternate'},
-      {name: 'fadeInUp', duration: '2s', delay: '1.3s', count: '1', direction: 'alternate'},
+      {name: 'fadeInUp', duration: '1s', delay: '1.3s', count: '1', direction: 'alternate'},
     ])
   }
   function t1(){
@@ -110,5 +116,4 @@ window.addEventListener('load', ()=>{
   function a6(){
     endAnimate('6')
   }
-  fullSlider.start() 
 })

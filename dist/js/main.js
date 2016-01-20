@@ -50,6 +50,7 @@ var FullSlider = function () {
       });
 
       document.addEventListener('transitionend', this.onTransitionend.bind(this));
+      document.addEventListener('webkitTransitionEnd', this.onTransitionend.bind(this));
     }
 
     /**
@@ -70,7 +71,7 @@ var FullSlider = function () {
   }, {
     key: 'translateY',
     value: function translateY(num) {
-      this.$sectionWrap.setAttribute('style', 'transform: translate3d(0, ' + num + 'px, 0); -webkit-transform: translate3d(0, ' + num + 'px, 0)');
+      this.$sectionWrap.setAttribute('style', '-webkit-transform: translate3d(0, ' + num + 'px, 0);transform: translate3d(0, ' + num + 'px, 0);');
     }
 
     /**
@@ -254,13 +255,19 @@ function endAnimate(page) {
 }
 
 window.addEventListener('load', function () {
+
+  $('#loader').style.display = 'none';
+  $('#arrow').className = 'arrow';
   t0();
+
   var fullSlider = new FullSlider({
     targetCallback: [t0, t1, t2, t3, t4, t5, t6],
     afterCallback: [a0, a1, a2, a3, a4, a5, a6]
   });
+  fullSlider.start();
+
   function t0() {
-    startAnimate('0', [{ name: 'puffIn', duration: '1s', delay: '0.5s', count: '1', direction: 'alternate' }, { name: 'puffIn', duration: '1s', delay: '1s', count: '1', direction: 'alternate' }, { name: 'fadeInUp', duration: '2s', delay: '1.3s', count: '1', direction: 'alternate' }]);
+    startAnimate('0', [{ name: 'puffIn', duration: '1s', delay: '0.5s', count: '1', direction: 'alternate' }, { name: 'puffIn', duration: '1s', delay: '1s', count: '1', direction: 'alternate' }, { name: 'fadeInUp', duration: '1s', delay: '1.3s', count: '1', direction: 'alternate' }]);
   }
   function t1() {
     startAnimate('1', [{ name: 'puffIn2-1', duration: '1s', delay: '0.5s', count: '1', direction: 'alternate' }, { name: 'puffIn2-2', duration: '1s', delay: '0.5s', count: '1', direction: 'alternate' }, { name: 'fadeInRight', duration: '1s', delay: '0.8s', count: '1', direction: 'alternate' }, { name: 'fadeInLeft', duration: '1s', delay: '1.1s', count: '1', direction: 'alternate' }]);
@@ -301,7 +308,6 @@ window.addEventListener('load', function () {
   function a6() {
     endAnimate('6');
   }
-  fullSlider.start();
 });
 
 },{"./FullSlider":1}]},{},[2]);
